@@ -16,7 +16,8 @@ dependencies = {
 build = {
     type = "builtin",
     modules = {
-        ["rfcvalid.2616"] = "lib/2616.lua"
+        ["rfcvalid.2616"] = "lib/2616.lua",
+        ["rfcvalid.6265"] = "lib/6265.lua"
     }
 }
 
