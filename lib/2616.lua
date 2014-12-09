@@ -50,12 +50,12 @@ local INVALID_TOKEN = '[^' .. TOKEN .. ']';
 
 local function isToken( val, toTrim )
     if type( val ) ~= 'string' then
-        return false;
+        return nil;
     elseif toTrim == true then
         val = trim( val );
     end
     
-    return not ( #val < 1 or val:find( INVALID_TOKEN ) );
+    return not ( #val < 1 or val:find( INVALID_TOKEN ) ) and val or nil;
 end
 
 return {
