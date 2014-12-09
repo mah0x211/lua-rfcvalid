@@ -1,4 +1,3 @@
-local trim = require('util.string').trim;
 local rfc2616 = require('rfcvalid.2616');
 
 -- construct invalid token table
