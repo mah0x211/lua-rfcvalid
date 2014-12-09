@@ -44,11 +44,19 @@ local COOKIE_OCTET =
 local INVALID_COOKIE_OCTET = '[^' .. COOKIE_OCTET:gsub( '[%]]', '%%%1' ) .. ']';
 
 local function isCookieValue( val )
+    local octet;
+    
     if type( val ) ~= 'string' then
         return nil;
     end
     
-    return not ( #val < 1 or val:find( INVALID_COOKIE_OCTET ) ) and val or nil;
+    -- enclosed by double-quotes
+    octet = val:match('^"(.*)"$') or val;
+    if #octet < 1 then
+        return val;
+    end
+    
+    return not ( octet:find( INVALID_COOKIE_OCTET ) ) and val or nil;
 end
 
 
