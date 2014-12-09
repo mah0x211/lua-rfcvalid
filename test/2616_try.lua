@@ -5,7 +5,7 @@ local rfc2616 = require('rfcvalid.2616');
 local invalidTokens = {};
 -- ctl
 for i = 0, 0x1f do
-    invalidTokens[string.char(i)] = false;
+    invalidTokens[string.char(i)] = true;
 end
 
 -- separators     = "(" | ")" | "<" | ">" | "@"
@@ -14,18 +14,20 @@ end
 --                | "{" | "}" | SP
 local separators = [=[ "(),/;:<=>?@[\]{}]=];
 for i = 1, #separators do
-    invalidTokens[separators:sub(i,i)] = false;
+    invalidTokens[separators:sub(i,i)] = true;
 end
 -- DEL
-invalidTokens[string.char(0x7f)] = false;
+invalidTokens[string.char(0x7f)] = true;
 
 -- check
 for c = 0, 0x7f do
     c = string.char(c);
-    if invalidTokens[c] == false then
-        ifTrue( rfc2616.isToken( c ) );
+    if invalidTokens[c] then
+        ifNotNil( rfc2616.isToken( c ) );
+        ifNotNil( rfc2616.isToken( c, true ) );
     else
-        ifNotTrue( rfc2616.isToken( c ) );
+        ifNil( rfc2616.isToken( c ) );
+        ifNil( rfc2616.isToken( c, true ) );
     end
 end
 
