@@ -7,6 +7,7 @@ for i = 0, 0x1f do
     invalidTokens[string.char(i)] = true;
 end
 
+-- cookie-value = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
 -- cookie-octet = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
 --                  ; US-ASCII characters excluding CTLs,
 --                  ; whitespace DQUOTE, comma, semicolon,
@@ -23,8 +24,13 @@ for c = 0, 0x7f do
     c = string.char(c);
     if invalidTokens[c] then
         ifNotNil( rfc6265.isCookieValue( c ) );
+        ifNotNil( rfc6265.isCookieValue( '"' .. c .. '"' ) );
     else
         ifNil( rfc6265.isCookieValue( c ) );
+        ifNil( rfc6265.isCookieValue( '"' .. c .. '"' ) );
     end
 end
+
+ifNil( rfc6265.isCookieValue( '' ) );
+ifNil( rfc6265.isCookieValue( '""' ) );
 
