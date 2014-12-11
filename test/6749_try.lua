@@ -22,7 +22,6 @@ for c = 0, 0x7f do
     if invalidTokens[c] then
         ifNotNil( rfc.isScopeToken( c ) );
     else
-        print( c );
         ifNil( rfc.isScopeToken( c ) );
     end
 end
