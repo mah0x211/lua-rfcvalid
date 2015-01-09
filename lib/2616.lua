@@ -55,7 +55,7 @@ local function isToken( val, toTrim )
         val = trim( val );
     end
     
-    return not ( #val < 1 or val:find( INVALID_TOKEN ) ) and val or nil;
+    return #val > 0 and not val:find( INVALID_TOKEN ) and val or nil;
 end
 
 return {
