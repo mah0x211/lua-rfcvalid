@@ -1,5 +1,5 @@
 --[[
-  
+
   Copyright (C) 2014 Masatoshi Teruya
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -8,10 +8,10 @@
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
- 
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
- 
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -19,10 +19,10 @@
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
-  
+
   lib/2616.lua
   Created by Masatoshi Teruya on 14/12/09.
-  
+
 --]]
 
 -- module
@@ -38,9 +38,9 @@ local trim = require('util.string').trim;
 --                | "," | ";" | ":" | "\" | <">
 --                | "/" | "[" | "]" | "?" | "="
 --                | "{" | "}" | SP | HT
-local TOKEN = 
+local TOKEN =
     -- ! # $ % & ' * + - .
-    '\x21\x23-\x27\x2A-\x2B\x2D\x2E' .. 
+    '\x21\x23-\x27\x2A-\x2B\x2D\x2E' ..
     -- 0-9A-Z
     '\x30-\x39\x41-\x5A' ..
     -- ^ _ ` a-z | ~
@@ -54,7 +54,7 @@ local function isToken( val, toTrim )
     elseif toTrim == true then
         val = trim( val );
     end
-    
+
     return #val > 0 and not val:find( INVALID_TOKEN ) and val or nil;
 end
 

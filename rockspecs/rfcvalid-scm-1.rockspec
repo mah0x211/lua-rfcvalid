@@ -5,7 +5,7 @@ source = {
 }
 description = {
     summary = "RFC specification based validation modules",
-    homepage = "https://github.com/mah0x211/lua-rfcvalid", 
+    homepage = "https://github.com/mah0x211/lua-rfcvalid",
     license = "MIT/X11",
     maintainer = "Masatoshi Teruya"
 }
