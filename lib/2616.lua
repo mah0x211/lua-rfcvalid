@@ -26,7 +26,7 @@
 --]]
 
 -- module
-local trim = require('rfcvalid.util').trim;
+local strtrim = require('rfcvalid.util').strtrim;
 
 -- https://www.ietf.org/rfc/rfc2616.txt
 -- 2.2 Basic Rules
@@ -55,7 +55,7 @@ local function isToken( str, toTrim )
     if type( str ) ~= 'string' then
         return nil;
     elseif toTrim == true then
-        str = trim( str );
+        str = strtrim( str );
     end
 
     return #str > 0 and not str:find( INVALID_TOKEN ) and str or nil;

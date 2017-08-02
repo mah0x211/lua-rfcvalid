@@ -25,14 +25,14 @@
 
 --]]
 
---- trim
+--- strtrim
 -- @param str
 -- @return str
-local function trim( str )
+local function strtrim( str )
     return str:match( '^[%s]*(.*[^%s])[%s]*$' ) or '';
 end
 
 
 return {
-    trim = trim
+    strtrim = strtrim
 };
