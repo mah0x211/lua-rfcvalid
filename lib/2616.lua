@@ -26,7 +26,7 @@
 --]]
 
 -- module
-local trim = require('util.string').trim;
+local trim = require('rfcvalid.util').trim;
 
 -- https://www.ietf.org/rfc/rfc2616.txt
 -- 2.2 Basic Rules
