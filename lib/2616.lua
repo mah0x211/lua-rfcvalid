@@ -34,10 +34,10 @@ local strtrim = require('rfcvalid.util').strtrim;
 -- CHAR         = 0-127
 -- CTLs         = any US-ASCII control character (octets 0 - 31) and DEL (127)
 -- token        = 1*<any CHAR except CTLs or separators>
--- separators     = "(" | ")" | "<" | ">" | "@"
---                | "," | ";" | ":" | "\" | <">
---                | "/" | "[" | "]" | "?" | "="
---                | "{" | "}" | SP | HT
+-- separators   = "(" | ")" | "<" | ">" | "@"
+--              | "," | ";" | ":" | "\" | <">
+--              | "/" | "[" | "]" | "?" | "="
+--              | "{" | "}" | SP | HT
 local TOKEN =
     -- ! # $ % & ' * + - .
     '\x21\x23-\x27\x2A-\x2B\x2D\x2E' ..
@@ -51,15 +51,15 @@ local INVALID_TOKEN = '[^' .. TOKEN .. ']';
 --- isToken
 -- @param str
 -- @return str
-local function isToken( str, toTrim )
+local function isToken( str )
     if type( str ) ~= 'string' then
         return nil;
-    elseif toTrim == true then
-        str = strtrim( str );
     end
 
+    str = strtrim( str );
     return #str > 0 and not str:find( INVALID_TOKEN ) and str or nil;
 end
+
 
 return {
     isToken = isToken
