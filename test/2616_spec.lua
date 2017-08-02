@@ -32,7 +32,6 @@ describe('rfcvalid.2616:', function()
         it('must be return nil', function()
             for k in pairs( invalidTokens ) do
                 assert.is_nil( rfc2616.isToken( k ) )
-                assert.is_nil( rfc2616.isToken( c, true ) )
             end
         end)
 
@@ -41,7 +40,6 @@ describe('rfcvalid.2616:', function()
                 c = string.char(c)
                 if not invalidTokens[c] then
                     assert.are.equal( c, rfc2616.isToken( c ) )
-                    assert.are.equal( c, rfc2616.isToken( c, true ) )
                 end
             end
         end)
