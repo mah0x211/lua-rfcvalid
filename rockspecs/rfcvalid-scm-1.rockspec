@@ -18,7 +18,8 @@ build = {
         ["rfcvalid.util"] = "lib/util.lua",
         ["rfcvalid.2616"] = "lib/2616.lua",
         ["rfcvalid.6265"] = "lib/6265.lua",
-        ["rfcvalid.6749"] = "lib/6749.lua"
+        ["rfcvalid.6749"] = "lib/6749.lua",
+        ["rfcvalid.7230"] = "lib/7230.lua",
     }
 }
 
