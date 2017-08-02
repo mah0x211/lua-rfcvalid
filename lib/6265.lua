@@ -43,20 +43,24 @@ local COOKIE_OCTET =
     '\x5E-\x7E';
 local INVALID_COOKIE_OCTET = '[^' .. COOKIE_OCTET:gsub( '[%]]', '%%%1' ) .. ']';
 
-local function isCookieValue( val )
+
+--- isCookieValue
+-- @param str
+-- @return str
+local function isCookieValue( str )
     local octet;
 
-    if type( val ) ~= 'string' then
+    if type( str ) ~= 'string' then
         return nil;
     end
 
     -- enclosed by double-quotes
-    octet = val:match('^"(.*)"$') or val;
+    octet = str:match('^"(.*)"$') or str;
     if #octet < 1 then
-        return val;
+        return str;
     end
 
-    return not ( octet:find( INVALID_COOKIE_OCTET ) ) and val or nil;
+    return not ( octet:find( INVALID_COOKIE_OCTET ) ) and str or nil;
 end
 
 

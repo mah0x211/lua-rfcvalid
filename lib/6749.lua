@@ -38,12 +38,16 @@ local INVALID_NQCHAR = '[^' .. NQCHAR:gsub( '[%]]', '%%%1' ) .. ']';
 -- A.4.  "scope" Syntax
 -- scope-token = 1*NQCHAR
 --
-local function isScopeToken( val )
-    if type( val ) ~= 'string' or #val < 1 then
+
+--- isScopeToken
+-- @param str
+-- @return str
+local function isScopeToken( str )
+    if type( str ) ~= 'string' or #str < 1 then
         return nil;
     end
 
-    return not val:find( INVALID_NQCHAR ) and val or nil;
+    return not str:find( INVALID_NQCHAR ) and str or nil;
 end
 
 

@@ -48,14 +48,17 @@ local TOKEN =
 local INVALID_TOKEN = '[^' .. TOKEN .. ']';
 
 
-local function isToken( val, toTrim )
-    if type( val ) ~= 'string' then
+--- isToken
+-- @param str
+-- @return str
+local function isToken( str, toTrim )
+    if type( str ) ~= 'string' then
         return nil;
     elseif toTrim == true then
-        val = trim( val );
+        str = trim( str );
     end
 
-    return #val > 0 and not val:find( INVALID_TOKEN ) and val or nil;
+    return #str > 0 and not str:find( INVALID_TOKEN ) and str or nil;
 end
 
 return {
