@@ -30,9 +30,11 @@
 -- Appendix A.  Augmented Backus-Naur Form (ABNF) Syntax
 --
 -- NQCHAR     = %x21 / %x23-5B / %x5D-7E
+--              ! # $ % & ' ( ) * + , - . / 0-9 : ; < = > ? @ A-Z [ ] ^ _ `
+--              a-z { | } ~
 --
-local NQCHAR = '\x21\x23-\x5B\x5D\x5E-\x7E';
-local INVALID_NQCHAR = '[^' .. NQCHAR:gsub( '[%]]', '%%%1' ) .. ']';
+local INVALID_NQCHAR = "[^%w!#$%%&'()*+,./:;<=>?@[%]^_`{|}~-]";
+
 
 --
 -- A.4.  "scope" Syntax

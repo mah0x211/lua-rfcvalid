@@ -42,15 +42,21 @@ local isToken = require('rfcvalid.2616').isToken;
 --      field-value    = *( field-content / obs-fold )
 --      field-content  = field-vchar [ 1*( SP / HTAB ) field-vchar ]
 --      field-vchar    = VCHAR / obs-text
+--      VCHAR          = %x21-7E
+--      obs-text       = %x80-FF
+--
+--      token          = 1*tchar
+--      tchar          = "!" / "#" / "$" / "%" / "&" / "'" / "*"
+--                     / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
+--                     / DIGIT / ALPHA
+--                     ; any VCHAR, except delimiters
 --
 --      obs-fold       = CRLF 1*( SP / HTAB )
 --                     ; obsolete line folding
 --                     ; see Section 3.2.4
 --
 local SPHT = '[ \t]';
-local VCHAR = '\x21-\x7E';
-local INVALID_VCHAR = '[^' .. VCHAR .. ']';
-
+local INVALID_VCHAR = '[^%w%p]';
 
 --- isFieldValue
 -- @param str

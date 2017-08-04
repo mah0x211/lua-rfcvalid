@@ -34,18 +34,10 @@ local strtrim = require('rfcvalid.util').strtrim;
 -- CHAR         = 0-127
 -- CTLs         = any US-ASCII control character (octets 0 - 31) and DEL (127)
 -- token        = 1*<any CHAR except CTLs or separators>
--- separators   = "(" | ")" | "<" | ">" | "@"
---              | "," | ";" | ":" | "\" | <">
---              | "/" | "[" | "]" | "?" | "="
---              | "{" | "}" | SP | HT
-local TOKEN =
-    -- ! # $ % & ' * + - .
-    '\x21\x23-\x27\x2A-\x2B\x2D\x2E' ..
-    -- 0-9A-Z
-    '\x30-\x39\x41-\x5A' ..
-    -- ^ _ ` a-z | ~
-    '\x5E-\x7A\x7C\x7E';
-local INVALID_TOKEN = '[^' .. TOKEN .. ']';
+-- separators   = '"' | "(" | ")" | "," | "/" | ":" | ";" | "<" | "=" | ">"
+--              | "?" | "@" | "[" | "\" | "]" | "{" | "}"
+--              | SP | HT
+local INVALID_TOKEN = "[^%w!#$%%&'*+.^_`|~-]";
 
 
 --- isToken

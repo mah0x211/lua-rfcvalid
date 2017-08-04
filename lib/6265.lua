@@ -31,17 +31,12 @@
 -- cookie-name  = token (RFC2616)
 -- cookie-value = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
 -- cookie-octet = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
+--                  ; ! # $ % & ' ( ) * + - . / 0-9 : < = > ? @ A-Z [ ] ^ _ `
+--                  ; a-z { | } ~
 --                  ; US-ASCII characters excluding CTLs,
 --                  ; whitespace DQUOTE, comma, semicolon,
 --                  ; and backslash
-local COOKIE_OCTET =
-    -- ! # $ % & ' ( ) * + - . / 0-9 :
-    '\x21\x23-\x2B\x2D-\x3A' ..
-    -- < = > ? @ A-Z [ ]
-    '\x3C-\x5B\x5D' ..
-    -- ^ _ ` a-z { | } ~
-    '\x5E-\x7E';
-local INVALID_COOKIE_OCTET = '[^' .. COOKIE_OCTET:gsub( '[%]]', '%%%1' ) .. ']';
+local INVALID_COOKIE_OCTET = "[^%w!#$%%&'()*+./:<=>?@[%]^_`{|}~-]";
 
 
 --- isCookieValue
