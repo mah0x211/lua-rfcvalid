@@ -54,6 +54,14 @@ local function isUInt8( n )
 end
 
 
+--- isUInt16
+-- @param n
+-- @return ok
+local function isUInt16( n )
+    return isUInt( n ) and n < 65536;
+end
+
+
 --- strtrim
 -- @param str
 -- @return str
@@ -66,5 +74,6 @@ return {
     strtrim = strtrim,
     isUnsigned = isUnsigned,
     isUInt = isUInt,
-    isUInt8 = isUInt8
+    isUInt8 = isUInt8,
+    isUInt16 = isUInt16
 };
