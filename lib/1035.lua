@@ -34,7 +34,7 @@ local HYPHEN = string.byte('-');
 
 --- isHostname
 -- @param str
--- @return ok
+-- @return str
 local function isHostname( str )
     if type( str ) == 'string' and #str > 0 and #str <= 253 then
         local labels = {};
@@ -53,7 +53,7 @@ local function isHostname( str )
                label:byte(1) == HYPHEN or str:byte( len ) == HYPHEN or
                label:find('[^%w-]') then
                 -- invalid label format
-                return false;
+                return nil;
             end
 
             idx = idx + 1;
@@ -78,16 +78,16 @@ local function isHostname( str )
                    isUInt8( tonumber( labels[3] ) ) and
                    labels[4]:find('^%d$+') and
                    isUInt8( tonumber( labels[4] ) ) then
-                    return true;
+                    return str;
                 end
             -- hostname
             else
-                return true;
+                return str;
             end
         end
     end
 
-    return false;
+    return nil;
 end
 
 
