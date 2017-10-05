@@ -62,27 +62,8 @@ local INVALID_VCHAR = '[^%w%p]';
 -- @param str
 -- @return str
 local function isFieldValue( str )
-    if type( str ) ~= 'string' then
-        return nil;
-    end
-
-    str = strtrim( str );
-    if #str > 0 then
-        local chunk = str;
-        local head, tail = chunk:find( SPHT );
-
-        while head do
-            if chunk:sub( 1, head - 1 ):find( INVALID_VCHAR ) then
-                return nil;
-            end
-
-            chunk = chunk:sub( tail + 1 );
-            head, tail = chunk:find( SPHT );
-        end
-
-        if #chunk == 0 or not chunk:find( INVALID_VCHAR ) then
-            return str;
-        end
+    if type( str ) == 'string' and not str:find('[^ \t%w%p]') then
+        return strtrim( str );
     end
 end
 
