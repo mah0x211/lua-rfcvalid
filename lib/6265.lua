@@ -47,15 +47,19 @@ local function isCookieValue( str )
 
     if type( str ) ~= 'string' then
         return nil;
-    end
-
-    -- enclosed by double-quotes
-    octet = str:match('^"(.*)"$') or str;
-    if #octet < 1 then
+    elseif #str < 1 then
         return str;
     end
 
-    return not ( octet:find( INVALID_COOKIE_OCTET ) ) and str or nil;
+    -- extract value that enclosed by double-quotes
+    octet = str:match('^"(.*)"$');
+    if octet then
+        if not octet:find( INVALID_COOKIE_OCTET ) then
+            return octet;
+        end
+    elseif not str:find( INVALID_COOKIE_OCTET ) then
+        return str;
+    end
 end
 
 
