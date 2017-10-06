@@ -174,7 +174,7 @@ static int iscookie_lua( lua_State *L )
     if( str[0] == '"' )
     {
         // not found DQUOTE at tail
-        if( str[len - 1] != '"' ){
+        if( len == 1 || str[len - 1] != '"' ){
             return 0;
         }
         // skip head and tail
