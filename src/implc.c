@@ -109,7 +109,7 @@ static const unsigned char VCHAR[256] = {
 //                             HTAB
     0, 0, 0, 0, 0, 0, 0, 0, 0, '\t', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0,
-//  %x20-07E
+//  %x20-7E
     ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.',
     '/',
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -121,6 +121,78 @@ static const unsigned char VCHAR[256] = {
     'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
     '{', '|', '}', '~'
 };
+
+
+//
+// https://www.ietf.org/rfc/rfc6265.txt
+// 4.1.1.  Syntax
+//
+// cookie-name  = token (RFC2616)
+// cookie-value = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
+// cookie-octet = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
+//                  ; ! # $ % & ' ( ) * + - . / 0-9 : < = > ? @ A-Z [ ] ^ _ `
+//                  ; a-z { | } ~
+//                  ; US-ASCII characters excluding CTLs,
+//                  ; whitespace DQUOTE, comma, semicolon,
+//
+static const unsigned char COOKIE_OCTET[256] = {
+//                             HTAB
+    0, 0, 0, 0, 0, 0, 0, 0, 0, '\t', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//                       SP
+    0, 0, 0, 0, 0, 0, 0, 0,
+//  0x21
+    '!',
+//  0x22
+    0,
+//  0x23-2B
+    '#', '$', '%', '&', '\'', '(', ')', '*', '+',
+//  0x2C
+    0,
+//  0x2D-3A
+    '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':',
+//  0x3B
+    0,
+//  0x3C-5B
+    '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+    'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
+    'Z', '[',
+//  0x5C
+    0,
+//  0x5D-7E
+    ']', '^', '_', '`',
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    '{', '|', '}', '~'
+};
+
+
+static int iscookie_lua( lua_State *L )
+{
+    size_t len = 0;
+    uint8_t *str = (uint8_t*)luaL_checklstring( L, 1, &len );
+    size_t i = 0;
+
+    // found DQUOTE at head
+    if( str[0] == '"' )
+    {
+        // not found DQUOTE at tail
+        if( str[len - 1] != '"' ){
+            return 0;
+        }
+        // skip head and tail
+        i++;
+        len--;
+    }
+
+    for(; i < len; i++ )
+    {
+        if( !COOKIE_OCTET[str[i]] ){
+            return 0;
+        }
+    }
+
+    return 1;
+}
 
 
 static int istchar_lua( lua_State *L )
@@ -161,8 +233,9 @@ static int isvchar_lua( lua_State *L )
 LUALIB_API int luaopen_rfcvalid_implc( lua_State *L )
 {
     struct luaL_Reg funcs[] = {
-        { "istchar", istchar_lua },
         { "isvchar", isvchar_lua },
+        { "istchar", istchar_lua },
+        { "iscookie", iscookie_lua },
         { NULL, NULL }
     };
     struct luaL_Reg *ptr = funcs;
