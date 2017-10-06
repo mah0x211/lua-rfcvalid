@@ -25,40 +25,16 @@
 
 --]]
 
--- https://www.ietf.org/rfc/rfc6265.txt
--- 4.1.1.  Syntax
---
--- cookie-name  = token (RFC2616)
--- cookie-value = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
--- cookie-octet = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
---                  ; ! # $ % & ' ( ) * + - . / 0-9 : < = > ? @ A-Z [ ] ^ _ `
---                  ; a-z { | } ~
---                  ; US-ASCII characters excluding CTLs,
---                  ; whitespace DQUOTE, comma, semicolon,
---                  ; and backslash
-local INVALID_COOKIE_OCTET = "[^%w!#$%%&'()*+./:<=>?@[%]^_`{|}~-]";
+local strtrim = require('rfcvalid.util').strtrim;
+local iscookie = require('rfcvalid.implc').iscookie;
 
 
 --- isCookieValue
 -- @param str
 -- @return str
 local function isCookieValue( str )
-    local octet;
-
-    if type( str ) ~= 'string' then
-        return nil;
-    elseif #str < 1 then
-        return str;
-    end
-
-    -- extract value that enclosed by double-quotes
-    octet = str:match('^"(.*)"$');
-    if octet then
-        if not octet:find( INVALID_COOKIE_OCTET ) then
-            return octet;
-        end
-    elseif not str:find( INVALID_COOKIE_OCTET ) then
-        return str;
+    if type( str ) == 'string' then
+        return iscookie( strtrim( str ) );
     end
 end
 
