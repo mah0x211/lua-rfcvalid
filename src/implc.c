@@ -136,10 +136,8 @@ static const unsigned char VCHAR[256] = {
 //                  ; whitespace DQUOTE, comma, semicolon,
 //
 static const unsigned char COOKIE_OCTET[256] = {
-//                             HTAB
-    0, 0, 0, 0, 0, 0, 0, 0, 0, '\t', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-//                       SP
-    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0,
 //  0x21
     '!',
 //  0x22
