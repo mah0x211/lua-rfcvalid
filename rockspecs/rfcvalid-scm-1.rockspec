@@ -22,7 +22,7 @@ build = {
         ["rfcvalid.6749"] = "lib/6749.lua",
         ["rfcvalid.7230"] = "lib/7230.lua",
         ["rfcvalid.7230"] = "lib/7230.lua",
-        ['rfcvalid.implc'] = {
+        ["rfcvalid.implc"] = {
             sources = { "src/implc.c" }
         },
     }
