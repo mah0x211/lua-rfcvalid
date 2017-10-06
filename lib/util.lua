@@ -62,16 +62,8 @@ local function isUInt16( n )
 end
 
 
---- strtrim
--- @param str
--- @return str
-local function strtrim( str )
-    return str:match( '^[%s]*(.*[^%s])[%s]*$' ) or '';
-end
-
 
 return {
-    strtrim = strtrim,
     isUnsigned = isUnsigned,
     isUInt = isUInt,
     isUInt8 = isUInt8,

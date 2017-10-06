@@ -26,7 +26,6 @@
 --]]
 
 --- assign to local
-local strtrim = require('rfcvalid.util').strtrim;
 local isToken = require('rfcvalid.2616').isToken;
 local isvchar = require('rfcvalid.implc').isvchar;
 

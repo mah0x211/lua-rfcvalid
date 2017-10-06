@@ -25,7 +25,6 @@
 
 --]]
 
-local strtrim = require('rfcvalid.util').strtrim;
 local iscookie = require('rfcvalid.implc').iscookie;
 
 

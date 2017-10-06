@@ -26,7 +26,6 @@
 --]]
 
 -- module
-local strtrim = require('rfcvalid.util').strtrim;
 local istchar = require('rfcvalid.implc').istchar;
 
 
