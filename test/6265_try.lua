@@ -23,7 +23,11 @@ invalidTokens[string.char(0x7f)] = true;
 for c = 0, 0x7f do
     c = string.char(c);
     if invalidTokens[c] then
-        ifNotNil( rfc6265.isCookieValue( c ) );
+        if c == ' ' or c == '\t' then
+            ifFalse( rfc6265.isCookieValue( c ) == '' );
+        else
+            ifNotNil( rfc6265.isCookieValue( c ) );
+        end
         ifNotNil( rfc6265.isCookieValue( '"' .. c .. '"' ) );
     else
         ifNil( rfc6265.isCookieValue( c ) );
