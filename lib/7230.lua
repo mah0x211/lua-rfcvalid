@@ -28,42 +28,18 @@
 --- assign to local
 local strtrim = require('rfcvalid.util').strtrim;
 local isToken = require('rfcvalid.2616').isToken;
---- constants
--- https://www.ietf.org/rfc/rfc7230.txt
--- 3.2.  Header Fields
---
---    Each header field consists of a case-insensitive field name followed
---    by a colon (":"), optional leading whitespace, the field value, and
---    optional trailing whitespace.
---
---      header-field   = field-name ":" OWS field-value OWS
---
---      field-name     = token
---      field-value    = *( field-content / obs-fold )
---      field-content  = field-vchar [ 1*( SP / HTAB ) field-vchar ]
---      field-vchar    = VCHAR / obs-text
---      VCHAR          = %x21-7E
---      obs-text       = %x80-FF
---
---      token          = 1*tchar
---      tchar          = "!" / "#" / "$" / "%" / "&" / "'" / "*"
---                     / "+" / "-" / "." / "^" / "_" / "`" / "|" / "~"
---                     / DIGIT / ALPHA
---                     ; any VCHAR, except delimiters
---
---      obs-fold       = CRLF 1*( SP / HTAB )
---                     ; obsolete line folding
---                     ; see Section 3.2.4
---
-local SPHT = '[ \t]';
-local INVALID_VCHAR = '[^%w%p]';
+local isvchar = require('rfcvalid.implc').isvchar;
+
 
 --- isFieldValue
 -- @param str
 -- @return str
 local function isFieldValue( str )
-    if type( str ) == 'string' and not str:find('[^ \t%w%p]') then
-        return strtrim( str );
+    if type( str ) == 'string' then
+        str = isvchar( str );
+        if str then
+            return strtrim( str );
+        end
     end
 end
 
