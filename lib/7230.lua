@@ -36,10 +36,7 @@ local isvchar = require('rfcvalid.implc').isvchar;
 -- @return str
 local function isFieldValue( str )
     if type( str ) == 'string' then
-        str = isvchar( str );
-        if str then
-            return strtrim( str );
-        end
+        return isvchar( strtrim( str ) );
     end
 end
 
