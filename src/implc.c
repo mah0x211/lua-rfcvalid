@@ -262,13 +262,17 @@ static int istchar_lua( lua_State *L )
 static int isvchar_lua( lua_State *L )
 {
     size_t len = 0;
-    uint8_t *str = (uint8_t*)luaL_checklstring( L, 1, &len );
-    size_t i = 0;
+    uint8_t *str = (uint8_t*)checklstrtrim( L, 1, &len );
 
-    for(; i < len; i++ )
+    if( len )
     {
-        if( !VCHAR[str[i]] ){
-            return 0;
+        size_t i = 0;
+
+        for(; i < len; i++ )
+        {
+            if( !VCHAR[str[i]] ){
+                return 0;
+            }
         }
     }
 
