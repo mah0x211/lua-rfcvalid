@@ -34,7 +34,7 @@ local iscookie = require('rfcvalid.implc').iscookie;
 -- @return str
 local function isCookieValue( str )
     if type( str ) == 'string' then
-        return iscookie( strtrim( str ) );
+        return iscookie( str );
     end
 end
 

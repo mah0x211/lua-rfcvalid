@@ -215,25 +215,29 @@ static int strtrim_lua( lua_State *L )
 static int iscookie_lua( lua_State *L )
 {
     size_t len = 0;
-    uint8_t *str = (uint8_t*)luaL_checklstring( L, 1, &len );
-    size_t i = 0;
+    uint8_t *str = (uint8_t*)checklstrtrim( L, 1, &len );
 
-    // found DQUOTE at head
-    if( str[0] == '"' )
+    if( len )
     {
-        // not found DQUOTE at tail
-        if( len == 1 || str[len - 1] != '"' ){
-            return 0;
+        size_t i = 0;
+
+        // found DQUOTE at head
+        if( str[0] == '"' )
+        {
+            // not found DQUOTE at tail
+            if( len == 1 || str[len - 1] != '"' ){
+                return 0;
+            }
+            // skip head and tail
+            i++;
+            len--;
         }
-        // skip head and tail
-        i++;
-        len--;
-    }
 
-    for(; i < len; i++ )
-    {
-        if( !COOKIE_OCTET[str[i]] ){
-            return 0;
+        for(; i < len; i++ )
+        {
+            if( !COOKIE_OCTET[str[i]] ){
+                return 0;
+            }
         }
     }
 
