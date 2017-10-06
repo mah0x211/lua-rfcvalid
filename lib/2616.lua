@@ -35,7 +35,7 @@ local istchar = require('rfcvalid.implc').istchar;
 -- @return str
 local function isToken( str )
     if type( str ) == 'string' then
-        return istchar( strtrim( str ) );
+        return istchar( str );
     end
 end
 

@@ -244,14 +244,17 @@ static int iscookie_lua( lua_State *L )
 static int istchar_lua( lua_State *L )
 {
     size_t len = 0;
-    uint8_t *str = (uint8_t*)luaL_checklstring( L, 1, &len );
-    size_t i = 0;
+    uint8_t *str = (uint8_t*)checklstrtrim( L, 1, &len );
 
-    for(; i < len; i++ )
+    if( len )
     {
+        size_t i = 0;
 
-        if( !TCHAR[str[i]] ){
-            return 0;
+        for(; i < len; i++ )
+        {
+            if( !TCHAR[str[i]] ){
+                return 0;
+            }
         }
     }
 
