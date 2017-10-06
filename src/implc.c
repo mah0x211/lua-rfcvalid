@@ -164,6 +164,54 @@ static const unsigned char COOKIE_OCTET[256] = {
 };
 
 
+static inline const char *checklstrtrim( lua_State *L, int idx, size_t *len )
+{
+    const char *str = luaL_checklstring( L, idx, len );
+    const char *head = NULL;
+    size_t k = *len;
+    size_t i = 0;
+
+    // skip head SP = 0x20, HT = 0x9
+    for(; i < k; i++ )
+    {
+        if( str[i] == 0x20 || str[i] == 0x9 ){
+            continue;
+        }
+        break;
+    }
+    head = str + i;
+
+    // skip tail SP = 0x20, HT = 0x9
+    for(; k > i; k-- )
+    {
+        if( str[k-1] == 0x20 || str[k-1] == 0x9 ){
+            continue;
+        }
+        break;
+    }
+
+    k = k - i;
+    if( k != *len ){
+        *len = k;
+        lua_pushlstring( L, head, k );
+        lua_replace( L, idx );
+    }
+
+    return head;
+}
+
+
+static int strtrim_lua( lua_State *L )
+{
+    size_t len = 0;
+
+    lua_settop( L, 1 );
+    checklstrtrim( L, 1, &len );
+
+    return 1;
+}
+
+
 static int iscookie_lua( lua_State *L )
 {
     size_t len = 0;
@@ -234,6 +282,7 @@ LUALIB_API int luaopen_rfcvalid_implc( lua_State *L )
         { "isvchar", isvchar_lua },
         { "istchar", istchar_lua },
         { "iscookie", iscookie_lua },
+        { "strtrim", strtrim_lua },
         { NULL, NULL }
     };
     struct luaL_Reg *ptr = funcs;
