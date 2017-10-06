@@ -27,29 +27,16 @@
 
 -- module
 local strtrim = require('rfcvalid.util').strtrim;
-
--- https://www.ietf.org/rfc/rfc2616.txt
--- 2.2 Basic Rules
---
--- CHAR         = 0-127
--- CTLs         = any US-ASCII control character (octets 0 - 31) and DEL (127)
--- token        = 1*<any CHAR except CTLs or separators>
--- separators   = '"' | "(" | ")" | "," | "/" | ":" | ";" | "<" | "=" | ">"
---              | "?" | "@" | "[" | "\" | "]" | "{" | "}"
---              | SP | HT
-local INVALID_TOKEN = "[^%w!#$%%&'*+.^_`|~-]";
+local istchar = require('rfcvalid.implc').istchar;
 
 
 --- isToken
 -- @param str
 -- @return str
 local function isToken( str )
-    if type( str ) ~= 'string' then
-        return nil;
+    if type( str ) == 'string' then
+        return istchar( strtrim( str ) );
     end
-
-    str = strtrim( str );
-    return #str > 0 and not str:find( INVALID_TOKEN ) and str or nil;
 end
 
 
