@@ -24,6 +24,8 @@
  *  Created by Masatoshi Teruya on 17/10/06.
  *
  */
+
+#include <stdint.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
@@ -123,18 +125,18 @@ static const unsigned char VCHAR[256] = {
 };
 
 
-//
-// https://www.ietf.org/rfc/rfc6265.txt
-// 4.1.1.  Syntax
-//
-// cookie-name  = token (RFC2616)
-// cookie-value = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
-// cookie-octet = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
-//                  ; ! # $ % & ' ( ) * + - . / 0-9 : < = > ? @ A-Z [ ] ^ _ `
-//                  ; a-z { | } ~
-//                  ; US-ASCII characters excluding CTLs,
-//                  ; whitespace DQUOTE, comma, semicolon,
-//
+/**
+ * https://www.ietf.org/rfc/rfc6265.txt
+ * 4.1.1.  Syntax
+ *
+ * cookie-name  = token (RFC2616)
+ * cookie-value = *cookie-octet / ( DQUOTE *cookie-octet DQUOTE )
+ * cookie-octet = %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E
+ *                  ; ! # $ % & ' ( ) * + - . / 0-9 : < = > ? @ A-Z [ ] ^ _ `
+ *                  ; a-z { | } ~
+ *                  ; US-ASCII characters excluding CTLs,
+ *                  ; whitespace DQUOTE, comma, semicolon,
+ */
 static const unsigned char COOKIE_OCTET[256] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0,
