@@ -460,11 +460,11 @@ PARSE_QUOTED_VAL:
                     return 1;
 
                 case DQUOTE:
-                    i++;
-                    lua_pushlstring( L, str + head, i - head );
-                    lua_rawset( L, -3 );
+                    tail = ++i;
                     // found tail
                     if( str[i] == CR ){
+                        lua_pushlstring( L, str + head, tail - head );
+                        lua_rawset( L, -3 );
                         goto CHECK_EOL;
                     }
                     goto CHECK_EOB;
