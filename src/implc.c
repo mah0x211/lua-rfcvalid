@@ -388,10 +388,19 @@ CHECK_EXTNAME:
             }
             tail = i;
             // found tail
-            if( str[i] == CR ){
-                lua_pushlstring( L, str + head, tail - head );
-                lua_rawseti( L, -2, ++idx );
-                goto CHECK_EOL;
+            if( str[i] == CR )
+            {
+                if( tail - head ){
+                    lua_pushlstring( L, str + head, tail - head );
+                    lua_rawseti( L, -2, ++idx );
+                    goto CHECK_EOL;
+                }
+
+                // disallow empty ext-name
+                lua_settop( L, 0 );
+                lua_pushinteger( L, -2 );
+
+                return 1;
             }
 
             skip_bws();
