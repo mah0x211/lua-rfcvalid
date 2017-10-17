@@ -25,6 +25,7 @@
  *
  */
 
+#include <ctype.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <errno.h>
@@ -33,6 +34,42 @@
 // lua
 #include <lua.h>
 #include <lauxlib.h>
+
+
+#define CR          '\r'
+#define LF          '\n'
+#define HT          '\t'
+#define SP          ' '
+#define EQ          '='
+#define DQUOTE      '"'
+#define BACKSLASH   '\\'
+
+
+static const unsigned char HEXDIGIT[256] = {
+//  ctrl-code: 0-32
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0,
+//  SP !  "  #  $  %  &  '  (  )  *  +  ,  -  .  /,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+
+//  0  1  2  3  4  5  6  7  8  9
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+
+//  :  ;  <  =  >  ?  @
+    0, 0, 0, 0, 0, 0, 0,
+
+//  A   B   C   D   E   F
+    11, 12, 13, 14, 15, 16,
+
+//  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  U  V  W  X  Y  Z  [  \  ]  ^  _  `
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+
+//  a   b   c   d   e   f
+    11, 12, 13, 14, 15, 16,
+
+//  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z  {  |  }  ~
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
 
 
 /**
@@ -166,6 +203,30 @@ static const unsigned char COOKIE_OCTET[256] = {
 };
 
 
+/**
+ * https://tools.ietf.org/html/rfc7230#section-3.2.6
+ * 3.2.6.  Field Value Components
+ *
+ * qdtext   = HTAB / SP / %x21 / %x23-5B / %x5D-7E / obs-text
+ * obs-text = %x80-FF
+ */
+static const unsigned char QDTEXT[256] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, '\t', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+//       !  "
+    ' ', 0, 0, '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    ':', ';', '<', '=', '>', '?', '@',
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+    'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+//      0x5C[backslash]
+    '[', 0, ']', '^', '_', '`',
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    '{', '|', '}', '~'
+};
+
+
 static inline const char *checklstrtrim( lua_State *L, int idx, size_t *len )
 {
     const char *str = luaL_checklstring( L, idx, len );
@@ -212,6 +273,219 @@ static int strtrim_lua( lua_State *L )
 
     return 1;
 }
+
+
+/**
+ * https://tools.ietf.org/html/rfc7230#section-4.1
+ * 4.1.  Chunked Transfer Coding
+ *
+ * chunk          = chunk-size [ chunk-ext ] CRLF
+ *                  chunk-data CRLF
+ * chunk-size     = 1*HEXDIG
+ * last-chunk     = 1*("0") [ chunk-ext ] CRLF
+ *
+ * 4.1.1.  Chunk Extensions
+ *
+ * chunk-ext        = *( BWS ";" BWS ext-name [ BWS "=" BWS ext-val ] )
+ * chunk-ext-name   = token
+ * chunk-ext-val    = token / quoted-string
+ *
+ * OWS (Optional Whitespace)        = *( SP / HTAB )
+ * BWS (Must be removed by parser)  = OWS
+ *
+ * quoted-string  = DQUOTE *( qdtext / quoted-pair ) DQUOTE
+ * qdtext         = HTAB / SP / %x21 / %x23-5B / %x5D-7E / obs-text
+ * quoted-pair    = "\" ( HTAB / SP / VCHAR / obs-text )
+ * obs-text       = %x80-FF
+ */
+static int chunksize_lua( lua_State *L )
+{
+    size_t len = 0;
+    const char *str = luaL_checklstring( L, 1, &len );
+
+    lua_settop( L, 1 );
+    // push default number of bytes consumed
+    lua_pushinteger( L, -1 );
+
+
+#define skip_bws()  do{                 \
+    switch( str[i] ){                   \
+        case SP:                        \
+        case HT:                        \
+            i++;                        \
+            continue;                   \
+        /* more bytes need */           \
+        case 0:                         \
+            lua_settop( L, 2 );         \
+            return 1;                   \
+    }                                   \
+    break;                              \
+}while(1)
+
+
+    if( len )
+    {
+        if( isxdigit( *str ) )
+        {
+            uint64_t dec = HEXDIGIT[*str] - 1;
+            size_t i = 1;
+            char c = 0;
+            size_t head = 0;
+            size_t tail = 0;
+            int idx = 0;
+
+            // hex to decimal
+            for(; str[i] && i < 16; i++ )
+            {
+                if( ( c = HEXDIGIT[str[i]] ) ){
+                    dec = ( dec << 4 ) | ( c - 1 );
+                    continue;
+                }
+                break;
+            }
+
+            // push chunk size
+            lua_pushinteger( L, dec );
+            // found tail
+            if( str[i] == CR )
+            {
+CHECK_EOL:
+                // more bytes need
+                if( !str[i + 1] ){
+                    lua_settop( L, 2 );
+                    return 1;
+                }
+                // found invalid byte sequence
+                else if( str[i + 1] != LF ){
+                    lua_settop( L, 0 );
+                    lua_pushinteger( L, -2 );
+                    return 1;
+                }
+                // replace number of bytes consumed
+                lua_pushinteger( L, i + 2 );
+                lua_replace( L, 2 );
+                return lua_gettop( L ) - 1;
+            }
+
+            skip_bws();
+            // invalid byte sequence
+            if( str[i] != ';' ){
+                lua_settop( L, 0 );
+                lua_pushinteger( L, -2 );
+                return 1;
+            }
+
+            // parse chunk-extensions
+            lua_createtable( L, 1, 1 );
+            i++;
+
+CHECK_EXTNAME:
+            // ext-name
+            skip_bws();
+            head = i;
+            while( TCHAR[str[i]] ){
+                i++;
+            }
+            tail = i;
+            // found tail
+            if( str[i] == CR ){
+                lua_pushlstring( L, str + head, tail - head );
+                lua_rawseti( L, -2, ++idx );
+                goto CHECK_EOL;
+            }
+
+            skip_bws();
+            switch( str[i] ){
+                // check next ext-name
+                case ';':
+                    i++;
+                    lua_pushlstring( L, str + head, tail - head );
+                    lua_rawseti( L, -2, ++idx );
+                    goto CHECK_EXTNAME;
+
+                // parse ext-value
+                case EQ:
+                    i++;
+                    lua_pushlstring( L, str + head, tail - head );
+                    break;
+
+                // invalid byte sequence
+                default:
+                    lua_settop( L, 0 );
+                    lua_pushinteger( L, -2 );
+                    return 1;
+            }
+
+            // ext-val
+            skip_bws();
+            head = i;
+            // value is quoted-string
+            if( str[i] == DQUOTE ){
+                goto PARSE_QUOTED_VAL;
+            }
+            while( TCHAR[str[i]] ){
+                i++;
+            }
+            tail = i;
+            // found tail
+            if( str[i] == CR ){
+                lua_pushlstring( L, str + head, tail - head );
+                lua_rawset( L, -3 );
+                goto CHECK_EOL;
+            }
+
+CHECK_EOB:
+            skip_bws();
+            switch( str[i] ){
+                // check next ext-name
+                case ';':
+                    lua_pushlstring( L, str + head, tail - head );
+                    lua_rawset( L, -3 );
+                    i++;
+                    goto CHECK_EXTNAME;
+
+                // invalid byte sequence
+                default:
+                    lua_settop( L, 0 );
+                    lua_pushinteger( L, -2 );
+                    return 1;
+            }
+
+PARSE_QUOTED_VAL:
+            while( QDTEXT[str[++i]] ){}
+            switch( str[i] ){
+                // more bytes need
+                case 0:
+                    lua_settop( L, 2 );
+                    return 1;
+
+                case DQUOTE:
+                    i++;
+                    lua_pushlstring( L, str + head, i - head );
+                    lua_rawset( L, -3 );
+                    // found tail
+                    if( str[i] == CR ){
+                        goto CHECK_EOL;
+                    }
+                    goto CHECK_EOB;
+
+                case BACKSLASH:
+                    // valid quoted-pair
+                    if( VCHAR[str[i + 1]] ){
+                        goto PARSE_QUOTED_VAL;
+                    }
+            }
+        }
+
+        // found invalid byte sequence
+        lua_pushinteger( L, -2 );
+    }
+
+#undef skip_bws
+
+    return 1;
+}
+
 
 
 static int iscookie_lua( lua_State *L )
@@ -295,6 +569,7 @@ LUALIB_API int luaopen_rfcvalid_implc( lua_State *L )
         { "isvchar", isvchar_lua },
         { "istchar", istchar_lua },
         { "iscookie", iscookie_lua },
+        { "chunksize", chunksize_lua },
         { "strtrim", strtrim_lua },
         { NULL, NULL }
     };
