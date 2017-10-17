@@ -91,6 +91,7 @@ describe('rfcvalid.implc.chunksize:', function()
             '1e0f\r\t',
             '1e0f \r\n',
             '1e0f ; myext1 -',
+            '1e0f ; myext1 ; \r\n',
             '1e0f ; myext1 ; myext2 = val2\n',
             '1e0f ; myext1 ; myext2 = val2 \n',
             '1e0f ; myext1 ; myext2 = val2 \r\n',
