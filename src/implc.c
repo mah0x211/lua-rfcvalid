@@ -25,15 +25,16 @@
  *
  */
 
+// lua
+#include <lauxlib.h>
+
+// system
 #include <ctype.h>
 #include <errno.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-// lua
-#include <lauxlib.h>
-#include <lua.h>
 
 #define CR        '\r'
 #define LF        '\n'
