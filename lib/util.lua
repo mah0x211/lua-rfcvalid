@@ -23,49 +23,42 @@
   lib/util.lua
   Created by Masatoshi Teruya on 17/08/02.
 
---]]
---- asign to local
+--]] --- asign to local
 local floor = math.floor;
 --- constants
 local INFINITE_POS = math.huge;
 
-
 --- isUnsigned
 -- @param n
 -- @return ok
-local function isUnsigned( n )
-    return type( n ) == 'number' and n < INFINITE_POS and n >= 0;
+local function isUnsigned(n)
+    return type(n) == 'number' and n < INFINITE_POS and n >= 0;
 end
-
 
 --- isUInt
 -- @param n
 -- @return ok
-local function isUInt( n )
-    return isUnsigned( n ) and floor( n ) == n;
+local function isUInt(n)
+    return isUnsigned(n) and floor(n) == n;
 end
-
 
 --- isUInt8
 -- @param n
 -- @return ok
-local function isUInt8( n )
-    return isUInt( n ) and n < 256;
+local function isUInt8(n)
+    return isUInt(n) and n < 256;
 end
-
 
 --- isUInt16
 -- @param n
 -- @return ok
-local function isUInt16( n )
-    return isUInt( n ) and n < 65536;
+local function isUInt16(n)
+    return isUInt(n) and n < 65536;
 end
-
-
 
 return {
     isUnsigned = isUnsigned,
     isUInt = isUInt,
     isUInt8 = isUInt8,
-    isUInt16 = isUInt16
+    isUInt16 = isUInt16,
 };

@@ -23,23 +23,19 @@
   lib/6265.lua
   Created by Masatoshi Teruya on 14/12/09.
 
---]]
-
-local iscookie = require('rfcvalid.implc').iscookie;
-
+--]] local iscookie = require('rfcvalid.implc').iscookie;
 
 --- isCookieValue
 -- @param str
 -- @return str
-local function isCookieValue( str )
-    if type( str ) == 'string' then
-        return iscookie( str );
+local function isCookieValue(str)
+    if type(str) == 'string' then
+        return iscookie(str);
     end
 end
 
-
 return {
     isCookieName = require('rfcvalid.2616').isToken,
-    isCookieValue = isCookieValue
+    isCookieValue = isCookieValue,
 };
 

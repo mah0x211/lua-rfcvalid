@@ -23,25 +23,21 @@
   lib/7230.lua
   Created by Masatoshi Teruya on 14/08/02.
 
---]]
-
---- assign to local
+--]] --- assign to local
 local isToken = require('rfcvalid.2616').isToken;
 local isvchar = require('rfcvalid.implc').isvchar;
-
 
 --- isFieldValue
 -- @param str
 -- @return str
-local function isFieldValue( str )
-    if type( str ) == 'string' then
-        return isvchar( str );
+local function isFieldValue(str)
+    if type(str) == 'string' then
+        return isvchar(str);
     end
 end
 
-
 return {
     isFieldName = isToken,
-    isFieldValue = isFieldValue
+    isFieldValue = isFieldValue,
 };
 

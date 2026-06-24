@@ -1,14 +1,12 @@
 --[[
     test/2616_spec.lua
     lua-rfcvalid
---]]
-local rfc2616 = require('rfcvalid.2616')
+--]] local rfc2616 = require('rfcvalid.2616')
 -- separators     = "(" | ")" | "<" | ">" | "@"
 --                | "," | ";" | ":" | "\" | <">
 --                | "/" | "[" | "]" | "?" | "="
 --                | "{" | "}" | SP
 local SEPARATORS = [=[ "(),/;:<=>?@[\]{}]=]
-
 
 describe('rfcvalid.2616:', function()
     local invalidTokens = {}
@@ -20,8 +18,8 @@ describe('rfcvalid.2616:', function()
 
         for i = 1, #SEPARATORS do
             -- ignore SP
-            if SEPARATORS:sub(i,i) ~= SP then
-                invalidTokens[SEPARATORS:sub(i,i)] = true
+            if SEPARATORS:sub(i, i) ~= SP then
+                invalidTokens[SEPARATORS:sub(i, i)] = true
             end
         end
 
@@ -36,11 +34,10 @@ describe('rfcvalid.2616:', function()
         invalidTokens[string.char(0x7f)] = true
     end)
 
-
     describe('test a isToken -', function()
         it('must be return nil', function()
-            for k in pairs( invalidTokens ) do
-                assert.is_nil( rfc2616.isToken( k ) )
+            for k in pairs(invalidTokens) do
+                assert.is_nil(rfc2616.isToken(k))
             end
         end)
 
@@ -49,9 +46,9 @@ describe('rfcvalid.2616:', function()
                 c = string.char(c)
                 if not invalidTokens[c] then
                     if c == ' ' or c == '\t' then
-                        assert.are.equal( '', rfc2616.isToken( c ) or nil )
+                        assert.are.equal('', rfc2616.isToken(c) or nil)
                     else
-                        assert.are.equal( c, rfc2616.isToken( c ) or nil )
+                        assert.are.equal(c, rfc2616.isToken(c) or nil)
                     end
                 end
             end
