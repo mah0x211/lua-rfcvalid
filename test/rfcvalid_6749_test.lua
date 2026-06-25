@@ -1,4 +1,4 @@
-pcall(require, 'luacov')
+require("luacov")
 local testcase = require('testcase')
 local assert = require('assert')
 local rfc = require('rfcvalid.6749')
