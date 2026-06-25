@@ -23,23 +23,19 @@
   lib/2616.lua
   Created by Masatoshi Teruya on 14/12/09.
 
---]]
-
--- module
+--]] -- module
 local istchar = require('rfcvalid.implc').istchar;
-
 
 --- isToken
 -- @param str
 -- @return str
-local function isToken( str )
-    if type( str ) == 'string' then
-        return istchar( str );
+local function isToken(str)
+    if type(str) == 'string' then
+        return istchar(str);
     end
 end
 
-
 return {
-    isToken = isToken
+    isToken = isToken,
 };
 

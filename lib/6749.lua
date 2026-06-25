@@ -23,9 +23,7 @@
   lib/6749.lua
   Created by Masatoshi Teruya on 14/12/11.
 
---]]
-
---
+--]] --
 -- https://www.ietf.org/rfc/rfc6749.txt
 -- Appendix A.  Augmented Backus-Naur Form (ABNF) Syntax
 --
@@ -35,7 +33,6 @@
 --
 local INVALID_NQCHAR = "[^%w!#$%%&'()*+,./:;<=>?@[%]^_`{|}~-]";
 
-
 --
 -- A.4.  "scope" Syntax
 -- scope-token = 1*NQCHAR
@@ -44,16 +41,15 @@ local INVALID_NQCHAR = "[^%w!#$%%&'()*+,./:;<=>?@[%]^_`{|}~-]";
 --- isScopeToken
 -- @param str
 -- @return str
-local function isScopeToken( str )
-    if type( str ) ~= 'string' or #str < 1 then
+local function isScopeToken(str)
+    if type(str) ~= 'string' or #str < 1 then
         return nil;
     end
 
-    return not str:find( INVALID_NQCHAR ) and str or nil;
+    return not str:find(INVALID_NQCHAR) and str or nil;
 end
 
-
 return {
-    isScopeToken = isScopeToken
+    isScopeToken = isScopeToken,
 };
 

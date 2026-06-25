@@ -23,9 +23,7 @@
   lib/1035.lua
   Created by Masatoshi Teruya on 17/08/05.
 
---]]
-
--- modules
+--]] -- modules
 local isUInt8 = require('rfcvalid.util').isUInt8;
 local type = type;
 local tonumber = tonumber;
@@ -35,21 +33,20 @@ local strbyte = string.byte;
 -- constants
 local HYPHEN = string.byte('-');
 
-
 --- isHostname
 -- @param str
 -- @return str
-local function isHostname( str )
-    if type( str ) == 'string' and #str > 0 and #str <= 253 then
+local function isHostname(str)
+    if type(str) == 'string' and #str > 0 and #str <= 253 then
         local labels = {};
         local idx = 0;
         local cur = 1;
-        local head = strfind( str, '.', cur, true );
+        local head = strfind(str, '.', cur, true);
 
         -- not FQDN
         if not head then
             -- invalid label format
-            if strfind( str, '[^%w-]' ) then
+            if strfind(str, '[^%w-]') then
                 return nil;
             end
 
@@ -57,16 +54,14 @@ local function isHostname( str )
         end
 
         while head do
-            local label = strsub( str, cur, head - 1 );
+            local label = strsub(str, cur, head - 1);
             local len = #label;
 
             -- label length must be 1-63
             -- first byte and last byte must not be hyphen
             -- label contains must be only alnum and hyphens
-            if len == 0 or len > 63 or
-               strbyte( label, 1 ) == HYPHEN or
-               strbyte( label, len ) == HYPHEN or
-               strfind( label, '[^%w-]' ) then
+            if len == 0 or len > 63 or strbyte(label, 1) == HYPHEN or
+                strbyte(label, len) == HYPHEN or strfind(label, '[^%w-]') then
                 -- invalid label format
                 return nil;
             end
@@ -76,27 +71,23 @@ local function isHostname( str )
 
             -- find next
             cur = head + 1;
-            head = strfind( str, '.', cur, true );
+            head = strfind(str, '.', cur, true);
         end
 
         idx = idx + 1;
-        labels[idx] = strsub( str, cur );
+        labels[idx] = strsub(str, cur);
 
         -- labels must has least 2 segment
         if #labels > 1 then
             -- check IPv4 labels
-            if #labels == 4 and #labels[1] <= 3 and
-               strfind( labels[1], '^%d$+' ) then
-                if isUInt8( tonumber( labels[1] ) ) and
-                   strfind( labels[2], '^%d$+' ) and
-                   isUInt8( tonumber( labels[2] ) ) and
-                   strfind( labels[3], '^%d$+' ) and
-                   isUInt8( tonumber( labels[3] ) ) and
-                   strfind( labels[4], '^%d$+' ) and
-                   isUInt8( tonumber( labels[4] ) ) then
+            if #labels == 4 and #labels[1] <= 3 and strfind(labels[1], '^%d$+') then
+                if isUInt8(tonumber(labels[1])) and strfind(labels[2], '^%d$+') and
+                    isUInt8(tonumber(labels[2])) and strfind(labels[3], '^%d$+') and
+                    isUInt8(tonumber(labels[3])) and strfind(labels[4], '^%d$+') and
+                    isUInt8(tonumber(labels[4])) then
                     return str;
                 end
-            -- hostname
+                -- hostname
             else
                 return str;
             end
@@ -106,8 +97,7 @@ local function isHostname( str )
     return nil;
 end
 
-
 return {
-    isHostname = isHostname
+    isHostname = isHostname,
 };
 
